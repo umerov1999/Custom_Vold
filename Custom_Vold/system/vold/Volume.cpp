@@ -483,7 +483,7 @@ int Volume::mountVol() {
             } else if (strcmp(fstype, "ntfs") == 0 || strcmp(fstype, "tntfs") == 0) {
 
                 if (Ntfs::doMount(devicePath, getMountpoint(), false, false, false,
-                AID_MEDIA_RW, AID_MEDIA_RW, 0007, true)) {
+                AID_MEDIA_RW, AID_MEDIA_RW, 0007)) {
 		    errno = EIO;
 		    setState(Volume::State_Idle);
                     SLOGE("%s failed to mount via NTFS (%s)\n", devicePath, strerror(errno));

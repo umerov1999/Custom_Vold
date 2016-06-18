@@ -46,7 +46,7 @@
 
 static char MKNTFS_PATH[] = "/system/bin/mkntfs";
 
-int Ntfs::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remount, bool executable, int ownerUid, int ownerGid, int permMask, bool createLost) {
+int Ntfs::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remount, bool executable, int ownerUid, int ownerGid, int permMask) {
     int rc;
     unsigned long flags;
     char mountData[255];
@@ -77,7 +77,7 @@ int Ntfs::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remo
 
     rc = mount(fsPath, mountPoint, "tntfs", flags, mountData);
 
-    if (!rc)
+    if (rc !=0)
     {
 	rc = mount(fsPath, mountPoint, "ntfs", flags, mountData);
     }

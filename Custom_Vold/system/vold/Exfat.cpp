@@ -82,7 +82,7 @@ int Exfat::doMount(const char *fsPath, const char *mountPoint, bool ro, bool rem
     	rc = mount(fsPath, mountPoint, "texfat", flags, mountData);
     }
 
-    if (!rc && ISVfat == false) {
+    if (rc !=0 && ISVfat == false) {
         rc = mount(fsPath, mountPoint, "exfat", flags, mountData);
     }
 
