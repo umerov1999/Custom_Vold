@@ -59,7 +59,7 @@ int F2FS::doMount(const char *fsPath, const char *mountPoint, bool ro, bool
      * TODO: Remove this code once we have a drop box in system_server.
      */
     char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sampling_profiler", value, "");
+    property_get("ro.vold.permissivefs", value, "");
     if (value[0] == '1') {
         SLOGW("The SD card is world-writable because the"
             " 'persist.sampling_profiler' system property is set to '1'.");
@@ -78,12 +78,6 @@ int F2FS::doMount(const char *fsPath, const char *mountPoint, bool ro, bool
         // Write access workaround
         chown(mountPoint, AID_MEDIA_RW, AID_MEDIA_RW);
         chmod(mountPoint, 0777);
-    }
-
-    if (rc && errno == EROFS) {
-        SLOGE("%s appears to be a read only filesystem - retrying mount RO", fsPath);
-        flags |= MS_RDONLY;
-        rc = mount(fsPath, mountPoint, "f2fs", flags, mountOpts);
     }
 
     return rc;

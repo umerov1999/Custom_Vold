@@ -44,14 +44,13 @@
 
 #include "Exfat.h"
 
-static char EXFAT_MKFS[] = "/system/bin/mkfs.exfat";
+static char EXFAT_MKFS[] = "/system/bin/mkexfat";
 
 int Exfat::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remount, bool executable, int ownerUid, int ownerGid, int permMask, bool ISVfat) {
     int rc;
     unsigned long flags;
     char mountData[255];
     bool isexecutable = executable;
-    const char* fstypen = "texfat";
     /*
      * Note: This is a temporary hack. If the sampling profiler is enabled,
      * we make the SD card world-writable so any process can write snapshots.
@@ -59,7 +58,7 @@ int Exfat::doMount(const char *fsPath, const char *mountPoint, bool ro, bool rem
      * TODO: Remove this code once we have a drop box in system_server.
      */
     char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sampling_profiler", value, "");
+    property_get("ro.vold.permissivefs", value, "");
     if (value[0] == '1') {
         SLOGW("The SD card is world-writable because the"
             " 'persist.sampling_profiler' system property is set to '1'.");
@@ -76,14 +75,15 @@ int Exfat::doMount(const char *fsPath, const char *mountPoint, bool ro, bool rem
     sprintf(mountData, "utf8,uid=%d,gid=%d,fmask=%o,dmask=%o", ownerUid, ownerGid, permMask, permMask);
     if(ISVfat == true)
     {
-	fstypen = "vfat";
+	rc = mount(fsPath, mountPoint, "vfat", flags, mountData);
     }
-    rc = mount(fsPath, mountPoint, fstypen, flags, mountData);
+    else
+    {
+    	rc = mount(fsPath, mountPoint, "texfat", flags, mountData);
+    }
 
-    if (rc && errno == EROFS) {
-        SLOGE("%s appears to be a read only filesystem - retrying mount RO", fsPath);
-        flags |= MS_RDONLY;
-        rc = mount(fsPath, mountPoint, fstypen, flags, mountData);
+    if (!rc && ISVfat == false) {
+        rc = mount(fsPath, mountPoint, "exfat", flags, mountData);
     }
 
     return rc;

@@ -59,7 +59,7 @@ int Ntfs::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remo
      * TODO: Remove this code once we have a drop box in system_server.
      */
     char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sampling_profiler", value, "");
+    property_get("ro.vold.permissivefs", value, "");
     if (value[0] == '1') {
         SLOGW("The SD card is world-writable because the"
             " 'persist.sampling_profiler' system property is set to '1'.");
@@ -77,10 +77,9 @@ int Ntfs::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remo
 
     rc = mount(fsPath, mountPoint, "tntfs", flags, mountData);
 
-    if (rc && errno == EROFS) {
-        SLOGE("%s appears to be a read only filesystem - retrying mount RO", fsPath);
-        flags |= MS_RDONLY;
-        rc = mount(fsPath, mountPoint, "tntfs", flags, mountData);
+    if (!rc)
+    {
+	rc = mount(fsPath, mountPoint, "ntfs", flags, mountData);
     }
 
     return rc;

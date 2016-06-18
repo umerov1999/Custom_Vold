@@ -61,7 +61,7 @@ int Ext4::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remo
      * TODO: Remove this code once we have a drop box in system_server.
      */
     char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sampling_profiler", value, "");
+    property_get("ro.vold.permissivefs", value, "");
     if (value[0] == '1') {
         SLOGW("The SD card is world-writable because the"
             " 'persist.sampling_profiler' system property is set to '1'.");
@@ -80,12 +80,6 @@ int Ext4::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remo
         // Write access workaround
         chown(mountPoint, AID_MEDIA_RW, AID_MEDIA_RW);
         chmod(mountPoint, 0777);
-    }
-
-    if (rc && errno == EROFS) {
-        SLOGE("%s appears to be a read only filesystem - retrying mount RO", fsPath);
-        flags |= MS_RDONLY;
-        rc = mount(fsPath, mountPoint, "ext4", flags, mountOpts);
     }
 
     return rc;
