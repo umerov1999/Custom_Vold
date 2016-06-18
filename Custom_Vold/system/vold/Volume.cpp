@@ -563,8 +563,8 @@ int Volume::mountAsecExternal() {
     char legacy_path[PATH_MAX];
     char secure_path[PATH_MAX];
 
-    snprintf(legacy_path, PATH_MAX, "%s/arnoldova_secure", getMountpoint());
-    snprintf(secure_path, PATH_MAX, "%s/.arnoldova_secure", getMountpoint());
+    snprintf(legacy_path, PATH_MAX, "%s/android_secure", getMountpoint());
+    snprintf(secure_path, PATH_MAX, "%s/.android_secure", getMountpoint());
 
     // Recover legacy secure path
     if (!access(legacy_path, R_OK | X_OK) && access(secure_path, R_OK | X_OK)) {

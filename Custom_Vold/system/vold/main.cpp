@@ -51,6 +51,7 @@ int main() {
 
     SLOGI("Vold 2.1 by Umerov Artem for Zenfone 4/5/6");
     SLOGI("Support FS: ext2-4, f2fs, exfat, vfat, ntfs");
+    SLOGI("Init Vold...");
 
     mkdir("/dev/block/vold", 0755);
 
