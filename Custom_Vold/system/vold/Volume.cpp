@@ -477,7 +477,7 @@ int Volume::mountVol() {
 		    errno = EIO;
 		    setState(Volume::State_Idle);
                     SLOGE("%s failed to mount via EXT4 (%s)\n", devicePath, strerror(errno));
-                    continue;
+                    return -1;
                 }
 
             } else if (strcmp(fstype, "ntfs") == 0 || strcmp(fstype, "tntfs") == 0) {
@@ -487,7 +487,7 @@ int Volume::mountVol() {
 		    errno = EIO;
 		    setState(Volume::State_Idle);
                     SLOGE("%s failed to mount via NTFS (%s)\n", devicePath, strerror(errno));
-                    continue;
+                    return -1;
                 }
 
             } else if (strcmp(fstype, "f2fs") == 0) {
@@ -495,7 +495,7 @@ int Volume::mountVol() {
 		    errno = EIO;
 		    setState(Volume::State_Idle);
                     SLOGE("%s failed to mount via F2FS (%s)\n", devicePath, strerror(errno));
-                    continue;
+                    return -1;
                 }
             } else if (strcmp(fstype, "exfat") == 0 || strcmp(fstype, "texfat") == 0) {
                 if (Exfat::doMount(devicePath, getMountpoint(), false, false, false,
@@ -503,7 +503,7 @@ int Volume::mountVol() {
 		    errno = EIO;
 		    setState(Volume::State_Idle);
                     SLOGE("%s to %s failed to mount via EXFAT (%s)\n", devicePath, getMountpoint(), strerror(errno));
-                    continue;
+                    return -1;
                 }
 
             } else if (strcmp(fstype, "vfat") == 0 || strcmp(fstype, "fat") == 0) {
@@ -512,7 +512,7 @@ int Volume::mountVol() {
 		    errno = EIO;
 		    setState(Volume::State_Idle);
                     SLOGE("%s to %s failed to mount via VFAT (%s)\n", devicePath, getMountpoint(), strerror(errno));
-                    continue;
+                    return -1;
                 }
 
             } else {
